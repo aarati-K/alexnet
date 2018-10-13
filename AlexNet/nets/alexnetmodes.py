@@ -71,3 +71,4 @@ def distribute(images, labels, num_classes, total_num_examples, devices, is_trai
     #    read how TensorFlow Variables work, and considering using tf.variable_scope.
     # 5. On the parameter server node, apply gradients.
     # 6. return required values.
+    pass

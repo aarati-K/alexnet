@@ -10,29 +10,29 @@ tf.logging.set_verbosity(tf.logging.DEBUG)
 
 clusterSpec_single = tf.train.ClusterSpec({
     "worker" : [
-        "localhost:2222"
+        "node-0.kakaraparthy-a2.uwmadison744-f18-pg0.wisc.cloudlab.us:2222"
     ]
 })
 
 clusterSpec_cluster = tf.train.ClusterSpec({
     "ps" : [
-        "node-0:2223"
+        "node-0.kakaraparthy-a2.uwmadison744-f18-pg0.wisc.cloudlab.us:2223"
     ],
     "worker" : [
-        "node-0:2222",
-        "node-1:2222"
+        "node-0.kakaraparthy-a2.uwmadison744-f18-pg0.wisc.cloudlab.us:2222",
+        "node-1.kakaraparthy-a2.uwmadison744-f18-pg0.wisc.cloudlab.us:2222"
     ]
 })
 
 clusterSpec_cluster2 = tf.train.ClusterSpec({
     "ps" : [
-        "node-0:2223"
+        "node-0.kakaraparthy-a2.uwmadison744-f18-pg0.wisc.cloudlab.us:2223"
     ],
     "worker" : [
-        "node-0:2222",
-        "node-1:2222",
-        "node-2:2222",
-        "node-3:2222"
+        "node-0.kakaraparthy-a2.uwmadison744-f18-pg0.wisc.cloudlab.us:2222",
+        "node-1.kakaraparthy-a2.uwmadison744-f18-pg0.wisc.cloudlab.us:2222",
+        "node-2.kakaraparthy-a2.uwmadison744-f18-pg0.wisc.cloudlab.us:2222",
+        "node-3.kakaraparthy-a2.uwmadison744-f18-pg0.wisc.cloudlab.us:2222"
     ]
 })
 
