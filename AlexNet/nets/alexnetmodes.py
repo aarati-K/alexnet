@@ -94,12 +94,12 @@ def distribute(images, labels, num_classes, total_num_examples, devices, is_trai
         global_step = builder_on_ps.ensure_global_step()
 
     # 2. Configure your optimizer using HybridMomentumOptimizer.
-    optimizer = configure_optimizer(global_step, total_num_steps)
+    optimizer = configure_optimizer(global_step, total_num_examples)
 
     # 3. Construct graph replica by splitting the original tensors into sub tensors. (hint: take a look at tf.split )
     num_workers = len(devices) - 1
-    split_images = tf.split(images, num_workers, 1)
-    split_labels = tf.split(labels, num_workers, 1)
+    split_images = tf.split(images, num_workers, 0)
+    split_labels = tf.split(labels, num_workers, 0)
 
     # 4. For each worker node, create replica by calling alexnet_inference and computing gradients.
     #    Reuse the variable for the next replica. For more information on how to reuse variables in TensorFlow,
@@ -107,19 +107,19 @@ def distribute(images, labels, num_classes, total_num_examples, devices, is_trai
     grads = []
     losses = []
 
-    with tf.variable_scope(tf.get_variable_scope()) as outer_scope:
+    with tf.variable_scope(tf.get_variable_scope(), reuse=tf.AUTO_REUSE) as outer_scope:
         for i in range(num_workers):
             scope_name = "scope_{}".format(str(i))
-            with tf.device(devices[i]), tf.name_scope(scope_name):
+            with tf.device(tf.train.replica_device_setter(worker_device=devices[i], ps_device=devices[-1])), tf.name_scope(scope_name):
                 builder = ModelBuilder(devices[-1])
-                net, logits, total_loss = alexnet_inference(builder, images[i], labels[i], num_classes)
+                net, logits, total_loss = alexnet_inference(builder, split_images[i], split_labels[i], num_classes)
                 print("net device: ", net.device, net.name)
                 print("logits device: ", logits.device, logits.name)
                 print("total_loss device: ", total_loss, total_loss.name)
 
                 with tf.control_dependencies([total_loss]):
                     grad = optimizer.compute_gradients(total_loss)
-                    print("grad device: ", grad.device, grad.name)
+                    # print("grad device: ", grad.device, grad.name)
                     grads.append(grad)
                 losses.append(total_loss)
         outer_scope.reuse_variables()
