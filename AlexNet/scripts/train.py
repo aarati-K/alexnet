@@ -136,8 +136,7 @@ def train(net_configname, batch_size, devices=None, target=None,
         print('Input batch shape: images: {} labels: {}'.format(images.get_shape(),
                                                                 labels.get_shape()))
 
-        (net, logprob, total_loss,
-         train_op, global_step) = alexnetmodes.original(images, labels, num_classes,
+        (total_loss, train_op, global_step) = alexnetmodes.original(images, labels, num_classes,
                                           batch_num * batch_size, devices)
 
         tfhelper.scalar_summary('total_loss', total_loss)
